@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-
 # @file setup.py
 # @author Adam Koehler
 # @date June 11, 2013
 #
-# @brief Python script to set up a student's workspace with CS 10 defaults and
+# @brief Python script to set up a student's workspace with UCR_CS defaults and
 #        to send workspace info off to instructor CSV.
 
 import os
@@ -12,7 +11,7 @@ import sys
 from subprocess import call
 from time import sleep
 
-ENV_FILE_NAME = "cs010_env"
+ENV_FILE_NAME = "ucrcsCS010__env"
 CS010_BASHRC = "bashrc_cs010_defaults.sh"
 CS010_SOURCE_SCRIPT = "source_bash.sh"
 
@@ -40,11 +39,11 @@ primary_bashrc_path = os.path.join(baseDir, ".bashrc")
 source_bash = os.path.join(binDir, CS010_SOURCE_SCRIPT)
 
 
-# open CS 010 environment file, write each env variable as it is determined
+# open UCRCS environment file, write each env variable as it is determined
 env_file = open(cs010_env_path, 'w+')
 
 # Acquire first name
-key = "CS010_FNAME"
+key = "UCRCS_FNAME"
 while True:
     if key in os.environ and os.environ[key] != "":
         fname = os.environ[key]
@@ -59,7 +58,7 @@ env_file.write("export " + str(key) + "=\"" + str(fname) + "\"" + "\n")
 
 
 # Acquire last name
-key = "CS010_LNAME"
+key = "UCRCS_LNAME"
 while True:
     if key in os.environ and os.environ[key] != "":
         lname = os.environ[key]
@@ -74,33 +73,37 @@ env_file.write("export " + str(key) + "=\"" + str(lname) + "\"" + "\n")
 
 
 # Acquire the course
-key = "CS010_COURSE"
+key = "UCRCS_COURSE"
 while True:
     if key in os.environ and os.environ[key] != "":
         course_name = os.environ[key]
-        if course_name == "CS010v" or course_name == "CS010":
+        if course_name == "CS010v" or course_name == "CS010" or course_name == "CS012":
             if course_name == "CS010":
                 course = 1
-            else:
+            if course_name == "CS010v":
                 course = 2
+            if course_name == "CS012v": 
+                course = 3
             break
     else:
-        course = raw_input("Which course are you in (1 for CS010, 2 for CS010v): ")
+        course = raw_input("Which course are you in (1 for CS010, 2 for CS010v, 3 for CS012v): ")
         course = course.strip()
         new_value = True
-    if int(course) == 1 or int(course) == 2:
+    if int(course) == 1 or int(course) == 2 or int(course) == 3:
         # Create course name
         if int(course) == 1:
             course_name = "CS010"
-        else:
+        if int(course) == 2:
             course_name = "CS010v"
+        if int(course) == 3:
+            course_name = "CS012v"
         break
 env_file.write("export " + str(key) + "=\"" + str(course_name) + "\"" + "\n")
 
 
 
 # Acquire the UCRSub email
-key = "CS010_UCRSUB_EMAIL"
+key = "UCRCS_UCRSUB_EMAIL"
 while True:
     if key in os.environ and os.environ[key] != "":
         ucrsub_login = os.environ[key]
@@ -113,14 +116,14 @@ while True:
 env_file.write("export " + str(key) + "=\"" + str(ucrsub_login) + "\"" + "\n")
 
         
-# Close CS 010 environment file
+# Close UCRCS environment file
 env_file.close()
 
 
 
 # Write to google doc
-#if "CS010_SPREAD" in os.environ and new_value:
-#    os.environ["CS010_SPREAD"] = "NOT"
+#if "UCRCS_SPREAD" in os.environ and new_value:
+#    os.environ["UCRCS_SPREAD"] = "NOT"
 #courseval = int(course)
 #commandLoc = binDir + "/editspread.pyc"
 #command = "python " + commandLoc + " " + str(fname) + " " + str(lname) + " " 
