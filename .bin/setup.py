@@ -11,7 +11,7 @@ import sys
 from subprocess import call
 from time import sleep
 
-ENV_FILE_NAME = "ucrcsCS010__env"
+ENV_FILE_NAME = "ucrcs_env"
 CS010_BASHRC = "bashrc_cs010_defaults.sh"
 CS010_SOURCE_SCRIPT = "source_bash.sh"
 
