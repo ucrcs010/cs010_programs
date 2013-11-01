@@ -135,8 +135,8 @@ env_file.close()
 
 
 # modify bashrc to contain source to CS 010 bashrc defaults and CS 010 env
-env_source_line = "source " + cs010_env_path + "\n"
-bash_source_line = "source " + cs010_bash + "\n"
+env_source_line = "source ~/${C9_PID}/.bin/" + ENV_FILE_NAME
+bash_source_line = "source ~/${C9_PID}/.bin/" + CS010_BASHRC
 bash_file = open(primary_bashrc_path, 'a+')
 contents = bash_file.read()
 found_env = contents.find(env_source_line)
