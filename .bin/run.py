@@ -73,9 +73,19 @@ def main():
     
     curDirectory = os.getcwd()
     executable_path = os.path.join(curDirectory, cmd)
+    
     try:
-        t = Task(timeout)
-        t.check_call([executable_path])
+        if os.path.isfile(executable_path):
+            t = Task(timeout)
+            t.check_call([executable_path])
+        else:
+            message = "ERROR:\n\nThe file you wish to execute cannot be found. "
+            message += "Make sure you are "
+            message += "in the same\ndirectory as the file "
+            message += "or you are providing a proper path to it."
+            message += "\n\nAttempted to execute file with path:\n   "
+            message += executable_path
+            print message
     except SystemError as e:
         if e[0][0] == -15:
             message = "Program execution did not complete within allowed "
