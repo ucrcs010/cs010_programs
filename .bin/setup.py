@@ -105,6 +105,7 @@ while True:
 env_file.write("export " + str(key) + "=\"" + str(course_name) + "\"" + "\n")
 
 
+
 # Acquire the UCRSub email
 key = "UCRCS_UCRSUB_EMAIL"
 while True:
@@ -175,7 +176,10 @@ if  index != -1:
     print ""
 else:
     print ""
-    print "Success! Close all editing tabs/terminals except one at bottom of interface."
-    print "Type 'exit' and hit 'enter' within the terminal at bottom of interface."
-    print ""
+    print "Successfully uploaded workspace information."
+
+print ""
+print "Please, close all editing tabs/terminals except one at bottom of interface."
+print "Type 'exit' and hit 'enter' within the terminal at bottom of interface."
+print ""
     
