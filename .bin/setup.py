@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # @file setup.py
 # @author Adam Koehler
-# @date June 11, 2013
+# @date January 8, 2014
 #
 # @brief Python script to set up a student's workspace with UCR_CS defaults and
 #        to send workspace info off to instructor CSV.
@@ -19,25 +19,22 @@ C9_USER = os.environ["C9_USER"]
 C9_PID = os.environ["C9_PID"]
 C9_WORKSPACE = os.environ["C9_PROJECT"]
 
+# initialize variables so bad entries can be considered
 fname = ""
 lname = ""
 course = 0
-
-# Store the invocation directory so we can go back to it
-invokeDir = os.getcwd()
-
-# Change to base directory
-os.chdir(invokeDir[0:invokeDir.find(C9_PID)])
+course_name = ""
+ucrsub_login = ""
 
 # Set up paths
 baseDir = os.getcwd()
-homeDir = os.path.join(baseDir, C9_PID)
-binDir = os.path.join(homeDir, ".bin")
+homeDir = os.path.expanduser("~")
+binDir = os.path.join(baseDir, ".bin")
 cs010_env_path = os.path.join(binDir, ENV_FILE_NAME)
 cs010_bash = os.path.join(binDir, CS010_BASHRC)
-primary_bashrc_path = os.path.join(baseDir, ".bashrc")
+primary_bashrc_path = os.path.join(homeDir, ".bashrc")
 source_bash = os.path.join(binDir, CS010_SOURCE_SCRIPT)
-
+local_loc = baseDir.replace(homeDir +"/"+ C9_PID +"/", "")
 
 # open UCRCS environment file, write each env variable as it is determined
 env_file = open(cs010_env_path, 'w+')
@@ -51,7 +48,7 @@ while True:
         fname = raw_input("Please enter your first name as displayed on Piazza (no spaces): ")
         fname = fname.strip()
         new_value = True
-    if fname.find(" ") == -1:
+    if fname.find(" ") == -1 and len(fname) > 0:
         break
 env_file.write("export " + str(key) + "=\"" + str(fname) + "\"" + "\n")
 
@@ -66,7 +63,7 @@ while True:
         lname = raw_input("Please enter your last name as displayed on Piazza (no spaces): ")
         lname = lname.strip()
         new_value = True
-    if lname.find(" ") == -1:
+    if lname.find(" ") == -1 and len(lname) > 0:
         break
 env_file.write("export " + str(key) + "=\"" + str(lname) + "\"" + "\n")
 
@@ -79,27 +76,26 @@ while True:
         course_name = os.environ[key]
         if course_name == "CS010v" or course_name == "CS010" or course_name == "CS012" or course_name == "CS012v":
             if course_name == "CS010":
-                course = 1
-            if course_name == "CS010v":
-                course = 2
-            if course_name == "CS012": 
-                course = 3                
-            if course_name == "CS012v": 
-                course = 4
+                course = "1"
+            elif course_name == "CS010v":
+                course = "2"
+            elif course_name == "CS012": 
+                course = "3"                
+            elif course_name == "CS012v": 
+                course = "4"
             break
-    else:
-        course = raw_input("Which course are you in (1 for CS010, 2 for CS010v, 3 for CS012, 4 for CS012v): ")
-        course = course.strip()
-        new_value = True
-    if int(course) == 1 or int(course) == 2 or int(course) == 3 or int(course) == 4:
+    course = raw_input("\n\t1) CS 010\n\t2) CS 010v\n\t3) CS 012\n\t4) CS 012v\nPlease enter the number preceding the course you are enrolled in: ")
+    course = course.strip()
+    new_value = True
+    if str(course) == "1" or str(course) == "2" or str(course) == "3" or str(course) == "4":
         # Create course name
-        if int(course) == 1:
+        if str(course) == "1":
             course_name = "CS010"
-        if int(course) == 2:
+        elif str(course) == "2":
             course_name = "CS010v"
-        if int(course) == 3:  
+        elif str(course) == "3":  
             course_name = "CS012"
-        if int(course) == 4: 
+        elif str(course) == "4": 
             course_name = "CS012v"
         break
 env_file.write("export " + str(key) + "=\"" + str(course_name) + "\"" + "\n")
@@ -115,7 +111,7 @@ while True:
         ucrsub_login = raw_input("Please enter your email used for UCRSub: ")
         ucrsub_login = ucrsub_login.strip()
         new_value = True
-    if ucrsub_login.find("@") != -1 and ucrsub_login.find(" ") == -1:
+    if ucrsub_login.find("@") != -1 and ucrsub_login.find(" ") == -1 and len(ucrsub_login) > 0 and ucrsub_login.find("@") < len(ucrsub_login) - 1:
         break
 env_file.write("export " + str(key) + "=\"" + str(ucrsub_login) + "\"" + "\n")
 
@@ -136,12 +132,12 @@ env_file.close()
 
 
 # modify bashrc to contain source to CS 010 bashrc defaults and CS 010 env
-env_source_line = "source ~/${C9_PID}/.bin/" + ENV_FILE_NAME
-bash_source_line = "source ~/${C9_PID}/.bin/" + CS010_BASHRC
+env_source_line = "source ~/${C9_PID}/" + local_loc + "/.bin/" + ENV_FILE_NAME
+bash_source_line = "source ~/${C9_PID}/" + local_loc + "/.bin/" + CS010_BASHRC
 bash_file = open(primary_bashrc_path, 'a+')
 contents = bash_file.read()
-found_env = contents.find(env_source_line)
-found_cs10bash = contents.find(bash_source_line)
+found_env = contents.find(ENV_FILE_NAME)
+found_cs10bash = contents.find(CS010_BASHRC)
 if found_env == -1:
     bash_file.write("\n")
     bash_file.write(env_source_line)
@@ -152,10 +148,6 @@ if found_cs10bash == -1:
     bash_file.write(bash_source_line)
     bash_file.write("\n")
 bash_file.close()
-
-
-# Change back to the directory that script was invoked from
-os.chdir(invokeDir)
 
 
 
