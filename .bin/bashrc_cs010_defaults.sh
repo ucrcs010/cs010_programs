@@ -12,3 +12,5 @@ alias run="~/${home_dir}/.bin/run.py"
 # run source command on bashrc file
 alias sourceme="source ~/.bashrc"
 
+# grab the run_once command again from github
+alias grab_runonce="git checkout run_once.sh"
