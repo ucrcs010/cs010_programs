@@ -34,7 +34,10 @@ cs010_env_path = os.path.join(binDir, ENV_FILE_NAME)
 cs010_bash = os.path.join(binDir, CS010_BASHRC)
 primary_bashrc_path = os.path.join(homeDir, ".bashrc")
 source_bash = os.path.join(binDir, CS010_SOURCE_SCRIPT)
-local_loc = baseDir.replace(homeDir +"/"+ C9_PID +"/", "")
+local_loc = baseDir.replace(homeDir +"/"+ C9_PID, "")
+if len(local_loc) > 0:
+    local_loc = local_loc[1:]
+
 
 # open UCRCS environment file, write each env variable as it is determined
 env_file = open(cs010_env_path, 'w+')
@@ -132,8 +135,13 @@ env_file.close()
 
 
 # modify bashrc to contain source to CS 010 bashrc defaults and CS 010 env
-env_source_line = "source ~/${C9_PID}/" + local_loc + "/.bin/" + ENV_FILE_NAME
-bash_source_line = "source ~/${C9_PID}/" + local_loc + "/.bin/" + CS010_BASHRC
+if len(local_loc) > 0:
+    env_source_line = "source ~/${C9_PID}/" + local_loc + "/.bin/" + ENV_FILE_NAME
+    bash_source_line = "source ~/${C9_PID}/" + local_loc + "/.bin/" + CS010_BASHRC
+else:
+    env_source_line = "source ~/${C9_PID}/.bin/" + ENV_FILE_NAME
+    bash_source_line = "source ~/${C9_PID}/.bin/" + CS010_BASHRC
+
 bash_file = open(primary_bashrc_path, 'a+')
 contents = bash_file.read()
 found_env = contents.find(ENV_FILE_NAME)
@@ -148,7 +156,6 @@ if found_cs10bash == -1:
     bash_file.write(bash_source_line)
     bash_file.write("\n")
 bash_file.close()
-
 
 
 import urllib2
