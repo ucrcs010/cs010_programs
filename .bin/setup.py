@@ -37,6 +37,21 @@ source_bash = os.path.join(binDir, CS010_SOURCE_SCRIPT)
 local_loc = baseDir.replace(homeDir +"/"+ C9_PID, "")
 if len(local_loc) > 0:
     local_loc = local_loc[1:]
+    
+    # read the contents of the CS 10 bashrc file
+    cs10_bfile = open(cs010_bash, 'r')
+    contents = cs10_bfile.read()
+    cs10_bfile.close()
+    
+    # replace the location of the run.py script
+    replacement = local_loc + "/.bin/run.py"
+    contents = contents.replace(".bin/run.py", replacement)
+    
+    # write the updated contents to the file, replacing the current file
+    cs10_bfile = open(cs010_bash, 'w+')
+    cs10_bfile.write(contents)
+    cs10_bfile.close()
+
 
 
 # open UCRCS environment file, write each env variable as it is determined
