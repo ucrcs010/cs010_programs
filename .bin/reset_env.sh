@@ -1,21 +1,21 @@
 #!/bin/bash
 
 # unset all the cs010 environment variables
-unset CS010_FNAME
-unset CS010_LNAME
-unset CS010_COURSE
-unset CS010_UCRSUB_EMAIL
-unset CS010_SPREAD
+unset UCRCS_FNAME
+unset UCRCS_LNAME
+unset UCRCS_COURSE
+unset UCRCS_UCRSUB_EMAIL
 
-# empyt the cs010 environment file
-cd .bin
-echo "" > cs010_env
+# empty the cs010 environment file
+cd ~/${C9_PID}/.bin/ucr_cs
+echo "" > ucrcs_env
 
 # navigate to home directory
-cd
-cd $C9_PID
+cd ~/$C9_PID
 
 # source the bashrc
 source ~/.bashrc
+
+echo "Exit all open terminals to properly reset all open environments."
 
 exit 0

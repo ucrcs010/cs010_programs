@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chmod u+rwx ${PWD}/.bin/*
+chmod u+rwx ~/${C9_PID}/.bin/ucr_cs/*
 
 python ${PWD}/.bin/setup.py
 

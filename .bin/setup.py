@@ -6,14 +6,28 @@
 # @brief Python script to set up a student's workspace with UCR_CS defaults and
 #        to send workspace info off to instructor CSV.
 
+
+# Google Forms have max 40,000 entries. Change response destination per quarter!
+google_form = "https://docs.google.com/forms/d/1HvikQB2HctxmTatfTb-yhNWZcSyZtncNatoqHaebric/formResponse"
+form_fname = "entry.1909434695"
+form_lname = "entry.652770293"
+form_email = "entry.1892144692"
+form_space = "entry.2127994554"
+form_class = "entry.769773627"
+form_c9user= "entry.1376037776"
+
+
+# Set file names (if they change)
+ENV_FILE_NAME = "ucrcs_env"
+CS_BASHRC = "bashrc_ucrcs_defaults.sh"
+
+
 import os
 import sys
 from subprocess import call
 from time import sleep
+import shutil
 
-ENV_FILE_NAME = "ucrcs_env"
-CS010_BASHRC = "bashrc_cs010_defaults.sh"
-CS010_SOURCE_SCRIPT = "source_bash.sh"
 
 C9_USER = os.environ["C9_USER"]
 C9_PID = os.environ["C9_PID"]
@@ -26,32 +40,32 @@ course = 0
 course_name = ""
 ucrsub_login = ""
 
+
+
+homeDir = os.path.expanduser("~")
+actHome = os.path.join(homeDir, C9_PID)
+homeBin = os.path.join(actHome, ".bin")
+ucr_cs  = os.path.join(homeBin, "ucr_cs")
+
+# determine if .bin directory exists at base level, if not create .bin + subs
+if not os.path.exists(homeBin):
+    os.makedirs(homeBin)
+    os.makedirs(ucr_cs)
+elif not os.path.exists(ucr_cs):
+    os.makedirs(ucr_cs)
+
 # Set up paths
 baseDir = os.getcwd()
-homeDir = os.path.expanduser("~")
 binDir = os.path.join(baseDir, ".bin")
-cs010_env_path = os.path.join(binDir, ENV_FILE_NAME)
-cs010_bash = os.path.join(binDir, CS010_BASHRC)
-primary_bashrc_path = os.path.join(homeDir, ".bashrc")
-source_bash = os.path.join(binDir, CS010_SOURCE_SCRIPT)
-local_loc = baseDir.replace(homeDir +"/"+ C9_PID, "")
-if len(local_loc) > 0:
-    local_loc = local_loc[1:]
-    
-    # read the contents of the CS 10 bashrc file
-    cs10_bfile = open(cs010_bash, 'r')
-    contents = cs10_bfile.read()
-    cs10_bfile.close()
-    
-    # replace the location of the run.py script
-    replacement = local_loc + "/.bin/run.py"
-    contents = contents.replace(".bin/run.py", replacement)
-    
-    # write the updated contents to the file, replacing the current file
-    cs10_bfile = open(cs010_bash, 'w+')
-    cs10_bfile.write(contents)
-    cs10_bfile.close()
 
+# copy over the files from .bin to user's local .bin/ucr_cs
+for f in os.listdir(binDir):
+    shutil.copy(os.path.join(binDir,f), ucr_cs)
+    
+# paths to various files
+cs010_env_path = os.path.join(ucr_cs, ENV_FILE_NAME)
+cs010_bash = os.path.join(ucr_cs, CS_BASHRC)
+primary_bashrc_path = os.path.join(homeDir, ".bashrc")
 
 
 # open UCRCS environment file, write each env variable as it is determined
@@ -71,7 +85,6 @@ while True:
 env_file.write("export " + str(key) + "=\"" + str(fname) + "\"" + "\n")
 
 
-
 # Acquire last name
 key = "UCRCS_LNAME"
 while True:
@@ -86,13 +99,12 @@ while True:
 env_file.write("export " + str(key) + "=\"" + str(lname) + "\"" + "\n")
 
 
-
 # Acquire the course
 key = "UCRCS_COURSE"
 while True:
     if key in os.environ and os.environ[key] != "":
         course_name = os.environ[key]
-        if course_name == "CS010v" or course_name == "CS010" or course_name == "CS012" or course_name == "CS012v":
+        if course_name == "CS010v" or course_name == "CS010" or course_name == "CS012" or course_name == "CS012v" or course_name == "CS_TEACH":
             if course_name == "CS010":
                 course = "1"
             elif course_name == "CS010v":
@@ -101,11 +113,13 @@ while True:
                 course = "3"                
             elif course_name == "CS012v": 
                 course = "4"
+            elif course_name == "CS_TEACH":
+                course = "99"
             break
-    course = raw_input("\n\t1) CS 010\n\t2) CS 010v\n\t3) CS 012\n\t4) CS 012v\nPlease enter the number preceding the course you are enrolled in: ")
+    course = raw_input("\n\t1) CS 010\n\t2) CS 010v\n\t3) CS 012\n\t4) CS 012v\n\t99) CS Teacher\nPlease enter the number preceding the course you are enrolled in: ")
     course = course.strip()
     new_value = True
-    if str(course) == "1" or str(course) == "2" or str(course) == "3" or str(course) == "4":
+    if str(course) == "1" or str(course) == "2" or str(course) == "3" or str(course) == "4" or str(course) == "99":
         # Create course name
         if str(course) == "1":
             course_name = "CS010"
@@ -115,9 +129,10 @@ while True:
             course_name = "CS012"
         elif str(course) == "4": 
             course_name = "CS012v"
+        elif str(course) == "99":
+            course_name = "CS_TEACH"
         break
 env_file.write("export " + str(key) + "=\"" + str(course_name) + "\"" + "\n")
-
 
 
 # Acquire the UCRSub email
@@ -133,34 +148,18 @@ while True:
         break
 env_file.write("export " + str(key) + "=\"" + str(ucrsub_login) + "\"" + "\n")
 
-        
 # Close UCRCS environment file
 env_file.close()
 
 
-
-# Write to google doc
-#if "UCRCS_SPREAD" in os.environ and new_value:
-#    os.environ["UCRCS_SPREAD"] = "NOT"
-#courseval = int(course)
-#commandLoc = binDir + "/editspread.pyc"
-#command = "python " + commandLoc + " " + str(fname) + " " + str(lname) + " " 
-#command += str(ucrsub_login) + " " + str(courseval)
-#os.system(command)
-
-
-# modify bashrc to contain source to CS 010 bashrc defaults and CS 010 env
-if len(local_loc) > 0:
-    env_source_line = "source ~/${C9_PID}/" + local_loc + "/.bin/" + ENV_FILE_NAME
-    bash_source_line = "source ~/${C9_PID}/" + local_loc + "/.bin/" + CS010_BASHRC
-else:
-    env_source_line = "source ~/${C9_PID}/.bin/" + ENV_FILE_NAME
-    bash_source_line = "source ~/${C9_PID}/.bin/" + CS010_BASHRC
+# modify bashrc to contain source to CS bashrc defaults and UCR CS env file
+env_source_line = "source ~/${C9_PID}/.bin/ucr_cs/" + ENV_FILE_NAME
+bash_source_line = "source ~/${C9_PID}/.bin/ucr_cs/" + CS_BASHRC
 
 bash_file = open(primary_bashrc_path, 'a+')
 contents = bash_file.read()
 found_env = contents.find(ENV_FILE_NAME)
-found_cs10bash = contents.find(CS010_BASHRC)
+found_cs10bash = contents.find(CS_BASHRC)
 if found_env == -1:
     bash_file.write("\n")
     bash_file.write(env_source_line)
@@ -174,26 +173,21 @@ bash_file.close()
 
 
 import urllib2
+workspace_url = "https://c9.io/" + str(C9_USER) + "/" + str(C9_WORKSPACE)
 
-url = "http://c9roster.cs.ucr.edu/85h0okskl93jfi/index.php"
-url += "?first_name=" + str(fname) + "&last_name=" + str(lname) + "&email="
-url += str(ucrsub_login) + "&c9_user=" + str(C9_USER) 
-url += "&workspace=" + str(C9_WORKSPACE) + "&class=" + str(course_name)
-
+# write response to Google Form
+url = google_form
+url += "?"+form_fname+"=" + str(fname) 
+url += "&"+form_lname+"=" + str(lname) 
+url += "&"+form_email+"=" + str(ucrsub_login) 
+url += "&"+form_c9user+"=" + str(C9_USER) 
+url += "&"+form_space+"=" + str(workspace_url) 
+url += "&"+form_class+"=" + str(course_name)
 page = urllib2.urlopen(url)
-pageContents = page.read()
 
-index = pageContents.lower().find("error")
-if  index != -1:
-    print "Could not upload workspace info to destination file: "
-    print "     ", pageContents[index:]
-    print ""
-else:
-    print ""
-    print "Successfully uploaded workspace information."
 
 print ""
-print "Please, close all editing tabs/terminals except one at bottom of interface."
-print "Type 'exit' and hit 'enter' within the terminal at bottom of interface."
+print "Close all open terminals, except one."
+print "Type 'exit' and hit 'enter' in the remaining open terminal(s)."
 print ""
     
