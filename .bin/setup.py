@@ -63,13 +63,12 @@ for f in os.listdir(binDir):
     shutil.copy(os.path.join(binDir,f), ucr_cs)
     
 # paths to various files
-cs010_env_path = os.path.join(ucr_cs, ENV_FILE_NAME)
-cs010_bash = os.path.join(ucr_cs, CS_BASHRC)
+ucrcs_env_path = os.path.join(ucr_cs, ENV_FILE_NAME)
 primary_bashrc_path = os.path.join(homeDir, ".bashrc")
 
 
 # open UCRCS environment file, write each env variable as it is determined
-env_file = open(cs010_env_path, 'w+')
+env_file = open(ucrcs_env_path, 'w+')
 
 # Acquire first name
 key = "UCRCS_FNAME"
@@ -104,7 +103,7 @@ key = "UCRCS_COURSE"
 while True:
     if key in os.environ and os.environ[key] != "":
         course_name = os.environ[key]
-        if course_name == "CS010v" or course_name == "CS010" or course_name == "CS012" or course_name == "CS012v" or course_name == "CS_TEACH":
+        if course_name == "CS010v" or course_name == "CS010" or course_name == "CS012" or course_name == "CS012v" or course_name == "CS013" or course_name == "CS_TEACH":
             if course_name == "CS010":
                 course = "1"
             elif course_name == "CS010v":
@@ -113,13 +112,15 @@ while True:
                 course = "3"                
             elif course_name == "CS012v": 
                 course = "4"
+            elif course_name == "CS013": 
+                course = "5"                
             elif course_name == "CS_TEACH":
                 course = "99"
             break
     course = raw_input("\n\t1) CS 010\n\t2) CS 010v\n\t3) CS 012\n\t4) CS 012v\n\t99) CS Teacher\nPlease enter the number preceding the course you are enrolled in: ")
     course = course.strip()
     new_value = True
-    if str(course) == "1" or str(course) == "2" or str(course) == "3" or str(course) == "4" or str(course) == "99":
+    if str(course) == "1" or str(course) == "2" or str(course) == "3" or str(course) == "4" or str(course) == "5" or str(course) == "99":
         # Create course name
         if str(course) == "1":
             course_name = "CS010"
@@ -129,6 +130,8 @@ while True:
             course_name = "CS012"
         elif str(course) == "4": 
             course_name = "CS012v"
+        elif str(course) == "5": 
+            course_name = "CS013"            
         elif str(course) == "99":
             course_name = "CS_TEACH"
         break
