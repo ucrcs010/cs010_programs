@@ -3,7 +3,7 @@ FORM_LOCATION="https://docs.google.com/forms/d/10yunl8d4HkAx6WfHEdarhKhK-9vc4VKY
 CODE_AREA="entry.1644658506"
 ERROR_AREA="entry.727705083"
 RSUB_EMAIL_AREA="entry.1527918066"
-errors=$(g++ $* 2>&1)
+errors=$(g++ -Wunused -Wfloat-equal -Wreturn-type $* 2>&1)
 
 if [ "${errors}" != "" ] 
 then
@@ -13,7 +13,7 @@ then
             mkdir cmp_tmp &>/dev/null
             for var in "$@"
             do
-                myerrs=$(g++ -c $var -o cmp_tmp/$var.o 2>&1)
+                myerrs=$(g++ -Wunused -Wfloat-equal -Wreturn-type -c $var -o cmp_tmp/$var.o 2>&1)
                 cp $var _no_name_tmp.cpp &>/dev/null
                 sed -i "1,/END ASS/d" _no_name_tmp.cpp &>/dev/null
                 value=$(cat _no_name_tmp.cpp 2>/dev/null)        
