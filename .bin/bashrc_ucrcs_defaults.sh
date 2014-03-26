@@ -20,3 +20,6 @@ alias grabonce="git pull; git checkout run_once.sh"
 
 # alias g++ to the compile script
 alias g++="~/${home_dir}/.bin/ucr_cs/compile.sh"
+
+# alias original g++ - og++ to usr/bin/g++
+alias og++="/usr/bin/g++"
