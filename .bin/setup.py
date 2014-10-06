@@ -156,8 +156,8 @@ env_file.close()
 
 
 # modify bashrc to contain source to CS bashrc defaults and UCR CS env file
-env_source_line = "source ~/${C9_PID}/.bin/ucr_cs/" + ENV_FILE_NAME
-bash_source_line = "source ~/${C9_PID}/.bin/ucr_cs/" + CS_BASHRC
+env_source_line = "source ~/workspace/.bin/ucr_cs/" + ENV_FILE_NAME
+bash_source_line = "source ~/workspace/.bin/ucr_cs/" + CS_BASHRC
 
 bash_file = open(primary_bashrc_path, 'a+')
 contents = bash_file.read()
