@@ -3,7 +3,7 @@
 #
 
 # home command used to improve the Cloud 9 experience.
-home_dir=${C9_PID}
+home_dir="workspace"
 alias home="cd ~/${home_dir}"
 
 # run command utilized to execute programs for defined time period
