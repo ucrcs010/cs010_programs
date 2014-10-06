@@ -43,7 +43,7 @@ ucrsub_login = ""
 
 
 homeDir = os.path.expanduser("~")
-actHome = os.path.join(homeDir, C9_PID)
+actHome = os.path.join(homeDir, "workspace")
 homeBin = os.path.join(actHome, ".bin")
 ucr_cs  = os.path.join(homeBin, "ucr_cs")
 

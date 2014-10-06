@@ -7,11 +7,11 @@ unset UCRCS_COURSE
 unset UCRCS_UCRSUB_EMAIL
 
 # empty the cs010 environment file
-cd ~/${C9_PID}/.bin/ucr_cs
+cd ~/workspace/.bin/ucr_cs
 echo "" > ucrcs_env
 
 # navigate to home directory
-cd ~/$C9_PID
+cd ~/workspace
 
 # source the bashrc
 source ~/.bashrc
