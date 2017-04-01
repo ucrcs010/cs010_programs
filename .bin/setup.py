@@ -145,7 +145,11 @@ while True:
     if key in os.environ and os.environ[key] != "":
         ucrsub_login = os.environ[key]
     else:
+<<<<<<< HEAD
         ucrsub_login = raw_input("\nPlease enter your netID.\nYour netID precedes the @ symbol in your netID@ucr.edu email.\nYour netID is also used to log into R'Web or iLearn.\nFor example fbar001@ucr.edu has a netID of fbar001.\nPlease enter your netID (no spaces): ")
+=======
+        ucrsub_login = raw_input("Please enter your email (e.g. netID@ucr.edu): ")
+>>>>>>> 8c4d6046a851f65d352633771091bf2d6d70cf87
         ucrsub_login = ucrsub_login.strip()
         new_value = True
     if ucrsub_login.find(" ") == -1 and len(ucrsub_login) > 0 and len(ucrsub_login) < 10:
@@ -187,7 +191,7 @@ url += "&"+form_email+"=" + str(ucrsub_login)
 url += "&"+form_c9user+"=" + str(C9_USER) 
 url += "&"+form_space+"=" + str(workspace_url) 
 url += "&"+form_class+"=" + str(course_name)
-page = urllib2.urlopen(url)
+#page = urllib2.urlopen(url)
 
 print ""
 print "Close all open internal Cloud 9 tabs (terminals and editing windows)."
