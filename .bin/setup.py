@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # @file setup.py
 # @author Adam Koehler
-# @date January 8, 2014
+# @date March 31, 2017
 #
 # @brief Python script to set up a student's workspace with UCR_CS defaults and
 #        to send workspace info off to instructor CSV.
 
 
 # Google Forms have max 40,000 entries. Change response destination per quarter!
-google_form = "https://docs.google.com/forms/d/1HvikQB2HctxmTatfTb-yhNWZcSyZtncNatoqHaebric/formResponse"
-form_fname = "entry.1909434695"
-form_lname = "entry.652770293"
-form_email = "entry.1892144692"
-form_space = "entry.2127994554"
-form_class = "entry.769773627"
-form_c9user= "entry.1376037776"
+google_form = "https://docs.google.com/forms/d/e/1FAIpQLScPybh5E2YcWJOooKNt1hLsUW00_UBJ3luSrMWMP00La26m9A/formResponse"
+form_fname = "entry.1121454124"
+form_lname = "entry.592757579"
+form_email = "entry.1580341649"
+form_space = "entry.2043705555"
+form_class = "entry.1589898964"
+form_c9user= "entry.1391444769"
 
 
 # Set file names (if they change)
@@ -60,7 +60,8 @@ binDir = os.path.join(baseDir, ".bin")
 
 # copy over the files from .bin to user's local .bin/ucr_cs
 for f in os.listdir(binDir):
-    shutil.copy(os.path.join(binDir,f), ucr_cs)
+    if os.path.isfile(os.path.join(binDir,f)):
+        shutil.copy(os.path.join(binDir,f), ucr_cs)
     
 # paths to various files
 ucrcs_env_path = os.path.join(ucr_cs, ENV_FILE_NAME)
@@ -76,7 +77,7 @@ while True:
     if key in os.environ and os.environ[key] != "":
         fname = os.environ[key]
     else:
-        fname = raw_input("Please enter your first name as displayed on Piazza (no spaces): ")
+        fname = raw_input("\nPlease enter your FIRST name as it is on the roster and iLearn.\nONLY your first name (no spaces): ")
         fname = fname.strip()
         new_value = True
     if fname.find(" ") == -1 and len(fname) > 0:
@@ -90,7 +91,7 @@ while True:
     if key in os.environ and os.environ[key] != "":
         lname = os.environ[key]
     else:
-        lname = raw_input("Please enter your last name as displayed on Piazza (no spaces): ")
+        lname = raw_input("\nPlease enter your LAST name as it is on the roster and iLearn.\nIf you have multiple, eliminate spaces and combine them.\nONLY your last name (no spaces): ")
         lname = lname.strip()
         new_value = True
     if lname.find(" ") == -1 and len(lname) > 0:
@@ -117,7 +118,7 @@ while True:
             elif course_name == "CS_TEACH":
                 course = "99"
             break
-    course = raw_input("\n\t1) CS 010\n\t2) CS 010v\n\t3) CS 012\n\t4) CS 012v\n\t5) CS 013\n\t99) CS Teacher\nPlease enter the number preceding the course you are enrolled in: ")
+    course = raw_input("\n\t1) CS 010\n\t2) CS 010 online\n\t3) CS 012\n\t4) CS 012 online\n\t5) CS 013\nSeveral courses are listed above, please enter the\nnumber preceding the course you are enrolled in: ")
     course = course.strip()
     new_value = True
     if str(course) == "1" or str(course) == "2" or str(course) == "3" or str(course) == "4" or str(course) == "5" or str(course) == "99":
@@ -144,10 +145,10 @@ while True:
     if key in os.environ and os.environ[key] != "":
         ucrsub_login = os.environ[key]
     else:
-        ucrsub_login = raw_input("Please enter your email used for UCRSub: ")
+        ucrsub_login = raw_input("\nPlease enter your netID.\nYour netID precedes the @ symbol in your netID@ucr.edu email.\nYour netID is also used to log into R'Web or iLearn.\nFor example fbar001@ucr.edu has a netID of fbar001.\nPlease enter your netID (no spaces): ")
         ucrsub_login = ucrsub_login.strip()
         new_value = True
-    if ucrsub_login.find("@") != -1 and ucrsub_login.find(" ") == -1 and len(ucrsub_login) > 0 and ucrsub_login.find("@") < len(ucrsub_login) - 1:
+    if ucrsub_login.find(" ") == -1 and len(ucrsub_login) > 0 and len(ucrsub_login) < 10:
         break
 env_file.write("export " + str(key) + "=\"" + str(ucrsub_login) + "\"" + "\n")
 
@@ -188,9 +189,8 @@ url += "&"+form_space+"=" + str(workspace_url)
 url += "&"+form_class+"=" + str(course_name)
 page = urllib2.urlopen(url)
 
-
 print ""
-print "Close all open terminals, except one."
-print "Type 'exit' and hit 'enter' in the remaining open terminal(s)."
+print "Close all open internal Cloud 9 tabs (terminals and editing windows)."
+print "Including terminals open in the bottom portion of Cloud 9."
 print ""
     
