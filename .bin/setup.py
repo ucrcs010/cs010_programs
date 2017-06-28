@@ -177,7 +177,7 @@ bash_file.close()
 
 
 import urllib2
-workspace_url = "https://c9.io/" + str(C9_USER) + "/" + str(C9_WORKSPACE)
+workspace_url = "https://ide.c9.io/" + str(C9_USER) + "/" + str(C9_WORKSPACE)
 
 # write response to Google Form
 url = google_form
